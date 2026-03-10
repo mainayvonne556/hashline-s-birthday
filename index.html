@@ -1,0 +1,85 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="Content-Style-Type" content="text/css">
+  <title></title>
+  <meta name="Generator" content="Cocoa HTML Writer">
+  <meta name="CocoaVersion" content="1504.84">
+  <style type="text/css">
+    p.p1 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica}
+    p.p2 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica; min-height: 14.0px}
+  </style>
+</head>
+<body>
+<p class="p1">&lt;!DOCTYPE html&gt;</p>
+<p class="p1">&lt;html lang="en"&gt;</p>
+<p class="p1">&lt;head&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;meta charset="UTF-8"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;meta name="viewport" content="width=device-width, initial-scale=1.0"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;title&gt;Happy Birthday!&lt;/title&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;style&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>body { margin: 0; background: #000; color: #ff3366; font-family: 'Courier New', Courier, monospace; overflow: hidden; display: flex; justify-content: center; align-items: center; height: 100vh; text-align: center; }</p>
+<p class="p1"><span class="Apple-converted-space">        </span>#matrix { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; opacity: 0.3; }</p>
+<p class="p1"><span class="Apple-converted-space">        </span>.content { z-index: 1; }</p>
+<p class="p1"><span class="Apple-converted-space">        </span>h1 { font-size: 3rem; text-transform: uppercase; letter-spacing: 5px; animation: glow 2s infinite; }</p>
+<p class="p1"><span class="Apple-converted-space">        </span>.countdown { font-size: 5rem; font-weight: bold; }</p>
+<p class="p1"><span class="Apple-converted-space">        </span>.hidden { display: none; }</p>
+<p class="p1"><span class="Apple-converted-space">        </span>@keyframes glow { 0%, 100% { text-shadow: 0 0 10px #ff3366; } 50% { text-shadow: 0 0 20px #ff0044, 0 0 30px #ff0044; } }</p>
+<p class="p1"><span class="Apple-converted-space">        </span>.photo-heart { width: 300px; height: 300px; margin-top: 20px; border-radius: 50%; border: 3px solid #ff3366; }</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;/style&gt;</p>
+<p class="p1">&lt;/head&gt;</p>
+<p class="p1">&lt;body&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;canvas id="matrix"&gt;&lt;/canvas&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;div class="content"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;div id="step1" class="countdown"&gt;3&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;div id="step2" class="hidden"&gt;&lt;h1&gt;HAPPY BIRTHDAY&lt;/h1&gt;&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;div id="step3" class="hidden"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;h1&gt;MY LOVE&lt;/h1&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;img src="https://via.placeholder.com/300" class="photo-heart" alt="Birthday Girl"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;p style="color: white; margin-top: 20px;"&gt;"You make every day brighter."&lt;/p&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;/div&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;script&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>// Simple Matrix Effect</p>
+<p class="p1"><span class="Apple-converted-space">        </span>const canvas = document.getElementById('matrix');</p>
+<p class="p1"><span class="Apple-converted-space">        </span>const ctx = canvas.getContext('2d');</p>
+<p class="p1"><span class="Apple-converted-space">        </span>canvas.width = window.innerWidth;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>canvas.height = window.innerHeight;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>const letters = "HAPPYBIRTHDAY1203";</p>
+<p class="p1"><span class="Apple-converted-space">        </span>const fontSize = 16;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>const columns = canvas.width / fontSize;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>const drops = Array(Math.floor(columns)).fill(1);</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>function draw() {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>ctx.fillStyle = "rgba(0, 0, 0, 0.05)";</p>
+<p class="p1"><span class="Apple-converted-space">            </span>ctx.fillRect(0, 0, canvas.width, canvas.height);</p>
+<p class="p1"><span class="Apple-converted-space">            </span>ctx.fillStyle = "#ff3366";</p>
+<p class="p1"><span class="Apple-converted-space">            </span>ctx.font = fontSize + "px arial";</p>
+<p class="p1"><span class="Apple-converted-space">            </span>drops.forEach((y, i) =&gt; {</p>
+<p class="p1"><span class="Apple-converted-space">                </span>const text = letters[Math.floor(Math.random() * letters.length)];</p>
+<p class="p1"><span class="Apple-converted-space">                </span>ctx.fillText(text, i * fontSize, y * fontSize);</p>
+<p class="p1"><span class="Apple-converted-space">                </span>if (y * fontSize &gt; canvas.height &amp;&amp; Math.random() &gt; 0.975) drops[i] = 0;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>drops[i]++;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>});</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p1"><span class="Apple-converted-space">        </span>setInterval(draw, 33);</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>// Simple Animation Sequence</p>
+<p class="p1"><span class="Apple-converted-space">        </span>setTimeout(() =&gt; { document.getElementById('step1').innerText = "2"; }, 1000);</p>
+<p class="p1"><span class="Apple-converted-space">        </span>setTimeout(() =&gt; { document.getElementById('step1').innerText = "1"; }, 2000);</p>
+<p class="p1"><span class="Apple-converted-space">        </span>setTimeout(() =&gt; {<span class="Apple-converted-space"> </span></p>
+<p class="p1"><span class="Apple-converted-space">            </span>document.getElementById('step1').classList.add('hidden');</p>
+<p class="p1"><span class="Apple-converted-space">            </span>document.getElementById('step2').classList.remove('hidden');</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}, 3000);</p>
+<p class="p1"><span class="Apple-converted-space">        </span>setTimeout(() =&gt; {<span class="Apple-converted-space"> </span></p>
+<p class="p1"><span class="Apple-converted-space">            </span>document.getElementById('step2').classList.add('hidden');</p>
+<p class="p1"><span class="Apple-converted-space">            </span>document.getElementById('step3').classList.remove('hidden');</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}, 5000);</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;/script&gt;</p>
+<p class="p1">&lt;/body&gt;</p>
+<p class="p1">&lt;/html&gt;</p>
+</body>
+</html>
