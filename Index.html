@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>For Hashline ❤️</title>
+    <style>
+        body, html { margin: 0; padding: 0; background: #000; overflow: hidden; font-family: sans-serif; color: white; touch-action: manipulation; }
+        canvas { position: fixed; top: 0; left: 0; z-index: 1; opacity: 0.5; }
+        .screen { position: fixed; inset: 0; z-index: 10; display: flex; flex-direction: column; align-items: center; justify-content: center; background: rgba(0,0,0,0.6); text-align: center; }
+        .hidden { display: none !important; }
+        .reveal-text { font-size: 2.5rem; color: #ffb6c1; text-shadow: 0 0 15px #ff69b4; font-weight: bold; animation: fadeIn 0.8s forwards; }
+        #count-num { font-size: 7rem; color: #ffb6c1; font-weight: bold; text-shadow: 0 0 25px #ff69b4; }
+        .stack-container { position: relative; width: 280px; height: 380px; perspective: 1000px; margin-top: 10px; }
+        .photo { position: absolute; inset: 0; border: 8px solid #fff; border-radius: 4px; background-size: cover; background-position: center; transition: transform 0.7s ease, opacity 0.5s; cursor: pointer; box-shadow: 0 5px 25px rgba(0,0,0,0.8); z-index: 5; }
+        .photo.flipped { transform: translateX(180%) rotate(30deg); opacity: 0; }
+        #tap-hint { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: #ff69b4; color: white; padding: 8px 16px; border-radius: 20px; z-index: 100; animation: bounce 1.5s infinite; pointer-events: none; }
+        @keyframes bounce { 0%, 100% { transform: translate(-50%, -50%) scale(1); } 50% { transform: translate(-50%, -60%) scale(1.1); } }
+        .lyrics-box { position: fixed; bottom: 40px; width: 100%; text-align: center; z-index: 20; padding: 0 10px; box-sizing: border-box; }
+        #lyric-text { color: #ffb6c1; font-size: 1.1rem; font-style: italic; text-shadow: 1px 1px 5px #000; }
+        .start-btn { padding: 20px 40px; background: #ff69b4; color: white; border: none; border-radius: 40px; font-size: 1.2rem; font-weight: bold; cursor: pointer; }
+        @keyframes fadeIn { from { opacity: 0; transform: scale(0.9); } to { opacity: 1; transform: scale(1); } }
+    </style>
+</head>
+<body>
+    <canvas id="matrix"></canvas>
+    <audio id="myAudio" src="music.mp3"></audio>
+
+    <div id="screen-start" class="screen">
+        <button class="start-btn" onclick="runSurprise()">HAPPY BIRTHDAY HASHLINE<br>Tap to Start 🌸</button>
+    </div>
+
+    <div id="screen-sequence" class="screen hidden"><div id="content-box"></div></div>
+
+    <div id="screen-main" class="screen hidden">
+        <div class="stack-container" id="stack"><div id="tap-hint">Tap to flip ✨</div></div>
+        <div class="lyrics-box"><p id="lyric-text">Swore I'd seen you before...</p></div>
+    </div>
+
+    <script>
+        const box = document.getElementById('content-box');
+        
+        const lyrics = [
+            "Swore I'd seen you before",
+            "Watched you walk through the door",
+            "Something in your eye",
+            "Reminded me of somebody I used to know",
+            "You touch my back",
+            "I took your hand",
+            "Something from your touch felt shockingly familiar",
+            "And I'd swore I'd seen you before",
+            "Oh, I swore I'd seen you before",
+            "Underneath the sheets, you enchanted me",
+            "And whispered sweet nothings in my ear",
+            "I shivered beneath you",
+            "All wrapped up in embers",
+            "It was a night to remember",
+            "Then I walked away ❤️"
+        ];
+
+        async function runSurprise() {
+            document.getElementById('screen-start').classList.add('hidden');
+            document.getElementById('screen-sequence').classList.remove('hidden');
+            
+            const audio = document.getElementById('myAudio');
+            audio.play().catch(e => console.log("Audio needs interaction"));
+
+            for (let i = 3; i > 0; i--) { 
+                box.innerHTML = `<div id="count-num">${i}</div>`; 
+                await new Promise(r => setTimeout(r, 1000)); 
+            }
+
+            const words = ["Happy", "Birthday", "To my one and only", "Hashline 🌸✨"];
+            for (let w of words) { 
+                box.innerHTML = `<div class="reveal-text">${w}</div>`; 
+                await new Promise(r => setTimeout(r, 1200)); 
+            }
+
+            document.getElementById('screen-sequence').classList.add('hidden');
+            document.getElementById('screen-main').classList.remove('hidden');
+
+            const stack = document.getElementById('stack');
+            const hint = document.getElementById('tap-hint');
+            let idx = 0;
+
+            for(let i = 15; i >= 1; i--) {
+                const p = document.createElement('div');
+                p.className = 'photo';
+                p.style.backgroundImage = `url('photo${i}.jpg')`; 
+                p.onclick = function() {
+                    if (hint) hint.classList.add('hidden');
+                    if (this.classList.contains('flipped')) return;
+                    
+                    this.classList.add('flipped');
+                    idx++;
+                    if(lyrics[idx]) {
+                        document.getElementById('lyric-text').innerText = lyrics[idx];
+                    }
+                };
+                stack.appendChild(p);
+            }
+        }
+
+        const c = document.getElementById('matrix'), x = c.getContext('2d');
+        c.width = window.innerWidth; c.height = window.innerHeight;
+        const m = "HASHLINE♡🌸✨".split(""), d = Array(Math.floor(c.width/16)).fill(1);
+        function draw() {
+            x.fillStyle = "rgba(0,0,0,0.1)"; x.fillRect(0,0,c.width,c.height);
+            x.fillStyle = "#ffb6c1"; x.font = "16px arial";
+            d.forEach((y, i) => { 
+                x.fillText(m[Math.floor(Math.random()*m.length)], i*16, y*16); 
+                if(y*16 > c.height && Math.random() > 0.9) d[i] = 0; 
+                d[i]++; 
+            });
+        }
+        setInterval(draw, 40);
+    </script>
+</body>
+</html>
