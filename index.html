@@ -2,509 +2,86 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>For Hashline 🌸</title>
-    <stylefunction flipNext() {
-    // We use 15 here because that is your total count
-    if (currentPage < 15) {
-        const allPages = document.querySelectorAll('.polaroid'); 
-        allPages[currentPage].classList.add('flipped'); 
-        currentPage++;
-        // This pushes the lyrics to the side
-        updateLyrics(currentPage);
-    }
-}
->
-        body { margin: 0; background: #000; overflow: hidden; font-family: 'Courier New', Courier, monospace; }
-        canvas { position: absolute; top: 0; left: 0; z-index: 1; }
-        
-        #overlay {
-            position: absolute; width: 100%; height: 100%;
-            display: flex; flex-direction: column; justify-content: center; align-items: center;
-            z-index: 10; background: rgba(0,0,0,0.85);
-        }
-
-        #start-btn {
-            padding: 18px 35px; font-size: 1.1rem; background: #ffb7c5; color: #d01d56;
-            border: none; border-radius: 50px; font-weight: bold; cursor: pointer;
-            box-shadow: 0 0 20px #ffb7c5; z-index: 100;
-        }
-
-        .count { font-size: 7rem; font-weight: bold; color: #ffb7c5; display: none; text-shadow: 0 0 15px #ff69b4; }
-        .msg { font-size: 2rem; display: none; text-transform: uppercase; color: #ffb7c5; text-align: center; line-height: 1.5; }
-
-        /* THE BOOK CORNER BUTTON */
-        #book-trigger {
-            display: none; position: fixed; bottom: 30px; right: 30px;
-            z-index: 40; font-size: 3.5rem; cursor: pointer;
-            animation: bounce 2s infinite;
-        }
-
-        @keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-15px); } }
-
-        /* FLIPBOOK CONTAINER */
-        #flipbook-container {
-            display: none; position: relative; width: 300px; height: 420px;
-            z-index: 20; perspective: 1500px;
-        }
-
-        .polaroid {
-            position: absolute; width: 100%; height: 100%;
-            background: white; padding: 10px 10px 60px 10px;
-            box-sizing: border-box; border-radius: 2px;
-            box-shadow: 0 5px 25px rgba(0,0,0,0.6);
-            transition: transform 0.8s ease-in-out, opacity 0.5s;
-            transform-origin: left center;
-        }
-
-        .polaroid img { width: 100%; height: 100%; object-fit: cover; }
-
-        .caption-text {
-            position: absolute; bottom: 15px; width: 100%; left: 0;
-            text-align: center; color: #d01d56; font-weight: bold; font-size: 1rem;
-        }
-    </style>
-</head>
-<body>
-
-<audio id="bg-music" src="music.mp3" loop></audio>
-<canvas id="stars"></canvas>
-<canvas id="matrix"></canvas>
-
-<div id="overlay">
-    <button id="start-btn">FOR MY GIRL 🌸</button>
-    <div id="countdown" class="count">3</div>
-    <div id="m1" class="msg">Happy 19th Birthday</div>
-    <div id="m2" class="msg">To My One & Only</div>
-    <div id="m3" class="msg">Hashline 🌸</div>
-</div>
-
-<div id="book-trigger">🌸</div>
-
-<div id="flipbook-container"></div>
-
-<script>
-    const mCanvas = document.getElementById('matrix');
-    const mCtx = mCanvas.getContext('2d');
-    const sCanvas = document.getElementById('stars');
-    const sCtx = sCanvas.getContext('2d');
-    const music = document.getElementById('bg-music');
-    const startBtn = document.getElementById('start-btn');
-    const book = document.getElementById('flipbook-container');
-    const trigger = document.getElementById('book-trigger');
-
-    mCanvas.width = sCanvas.width = window.innerWidth;
-    mCanvas.height = sCanvas.height = window.innerHeight;
-
-    // STARS & FALLING FLOWERS
-    const stars = Array.from({length: 100}, () => ({x: Math.random()*sCanvas.width, y: Math.random()*sCanvas.height, r: Math.random()*1.5}));
-    function drawStars() {
-        sCtx.clearRect(0,0,sCanvas.width, sCanvas.height);
-        sCtx.fillStyle = "white";
-        stars.forEach(s => { sCtx.beginPath(); sCtx.arc(s.x, s.y, s.r, 0, Math.PI*2); sCtx.fill(); });
-    }
-    drawStars();
-
-    const chars = "🌸✨HASHLINE🌸19🌸";
-    const drops = Array(Math.floor(mCanvas.width/20)).fill(1);
-    function drawMatrix() {
-        mCtx.fillStyle = "rgba(0, 0, 0, 0.1)";
-        mCtx.fillRect(0, 0, mCanvas.width, mCanvas.height);
-        mCtx.fillStyle = "#ffb7c5";
-        mCtx.font = "20px serif";
-        drops.forEach((y, i) => {
-            const text = chars[Math.floor(Math.random()*chars.length)];
-            mCtx.fillText(text, i*20, y*20);
-            if(y*20 > mCanvas.height && Math.random() > 0.98) drops[i] = 0;
-            drops[i]++;
-        });
-    }
-    setInterval(drawMatrix, 50);
-
-    // FLIPBOOK DATA
-    const captions = ["19 looks good on you 🌸", "My favorite person", "Keep shining", "Pure happiness", "Love you forever", "The most beautiful", "A special day", "Simply Hashline", "My queen 🌸", "Gorgeous!", "Always us", "The best laugh", "So lucky for you", "Forever ❤️", "Happy 19th, Hashline!"];
-
-    // Initialize Book
-    for (let i = 15; i >= 1; i--) {
-        const div = document.createElement('div');
-        div.className = 'polaroid';
-        div.style.zIndex = 15 - i;
-        div.innerHTML = `<img src="${i}.jpg"><div class="caption-text">${captions[i-1]}</div>`;
-        book.appendChild(div);
-    }
-
-    // Trigger Logic
-    trigger.onclick = function() {
-        const topCard = book.querySelector('.polaroid:not([style*="transform: rotateY"])');
-        if (topCard) {
-            topCard.style.transform = "rotateY(-110deg)";
-            topCard.style.opacity = "0";
-            setTimeout(() => { topCard.style.display = 'none'; }, 800);
-        }
-    };
-
-    startBtn.onclick = () => {
-        startBtn.style.display = 'none';
-        music.play();
-        runSequence();
-    };
-
-    async function runSequence() {
-        const count = document.getElementById('countdown');
-        count.style.display = 'block';
-        await new Promise(r => setTimeout(r, 1000)); count.innerText = "2";
-        await new Promise(r => setTimeout(r, 1000)); count.innerText = "1";
-        await new Promise(r => setTimeout(r, 1000)); count.style.display = "none";
-
-        const ids = ['m1', 'm2', 'm3'];
-        for (let id of ids) {
-            let el = document.getElementById(id);
-            el.style.display = "block";
-            await new Promise(r => setTimeout(r, 1500));
-            if (id !== 'm3') el.style.display = "none";
-        }
-        document.getElementById('overlay').style.background = "transparent";
-        book.style.display = "block";
-        trigger.style.display = "block";
-    }
-</script<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>For Hashline 🌸</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>For Hashline ❤️</title>
     <style>
-        body { margin: 0; background: #000; overflow: hidden; font-family: 'Courier New', Courier, monospace; }
-        canvas { position: absolute; top: 0; left: 0; z-index: 1; }
-        
-        #overlay {
-            position: absolute; width: 100%; height: 100%;
-            display: flex; flex-direction: column; justify-content: center; align-items: center;
-            z-index: 10; background: rgba(0,0,0,0.85);
-        }
-
-        #start-btn {
-            padding: 18px 35px; font-size: 1.1rem; background: #ffb7c5; color: #d01d56;
-            border: none; border-radius: 50px; font-weight: bold; cursor: pointer;
-            box-shadow: 0 0 20px #ffb7c5; z-index: 100;
-        }
-
-        .count { font-size: 7rem; font-weight: bold; color: #ffb7c5; display: none; text-shadow: 0 0 15px #ff69b4; }
-        .msg { font-size: 2rem; display: none; text-transform: uppercase; color: #ffb7c5; text-align: center; line-height: 1.5; }
-
-        /* THE BOOK CORNER BUTTON */
-        #book-trigger {
-            display: none; position: fixed; bottom: 30px; right: 30px;
-            z-index: 40; font-size: 3.5rem; cursor: pointer;
-            animation: bounce 2s infinite;
-        }
-
-        @keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-15px); } }
-
-        /* FLIPBOOK CONTAINER */
-        #flipbook-container {
-            display: none; position: relative; width: 300px; height: 420px;
-            z-index: 20; perspective: 1500px;
-        }
-
-        .polaroid {
-            position: absolute; width: 100%; height: 100%;
-            background: white; padding: 10px 10px 60px 10px;
-            box-sizing: border-box; border-radius: 2px;
-            box-shadow: 0 5px 25px rgba(0,0,0,0.6);
-            transition: transform 0.8s ease-in-out, opacity 0.5s;
-            transform-origin: left center;
-        }
-
-        .polaroid img { width: 100%; height: 100%; object-fit: cover; }
-
-        .caption-text {
-            position: absolute; bottom: 15px; width: 100%; left: 0;
-            text-align: center; color: #d01d56; font-weight: bold; font-size: 1rem;
-        }
+        body, html { margin: 0; padding: 0; background: #000; overflow: hidden; font-family: sans-serif; color: white; touch-action: manipulation; }
+        canvas { position: fixed; top: 0; left: 0; z-index: 1; opacity: 0.5; }
+        .screen { position: fixed; inset: 0; z-index: 10; display: flex; flex-direction: column; align-items: center; justify-content: center; background: rgba(0,0,0,0.6); text-align: center; }
+        .hidden { display: none !important; }
+        .reveal-text { font-size: 2.5rem; color: #ffb6c1; text-shadow: 0 0 15px #ff69b4; font-weight: bold; animation: fadeIn 0.8s forwards; }
+        #count-num { font-size: 7rem; color: #ffb6c1; font-weight: bold; text-shadow: 0 0 25px #ff69b4; }
+        .stack-container { position: relative; width: 280px; height: 380px; perspective: 1000px; margin-top: 10px; }
+        .photo { position: absolute; inset: 0; border: 8px solid #fff; border-radius: 4px; background-size: cover; background-position: center; transition: transform 0.7s ease, opacity 0.5s; cursor: pointer; box-shadow: 0 5px 25px rgba(0,0,0,0.8); z-index: 5; }
+        .photo.flipped { transform: translateX(180%) rotate(30deg); opacity: 0; }
+        #tap-hint { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: #ff69b4; color: white; padding: 8px 16px; border-radius: 20px; z-index: 100; animation: bounce 1.5s infinite; pointer-events: none; }
+        @keyframes bounce { 0%, 100% { transform: translate(-50%, -50%) scale(1); } 50% { transform: translate(-50%, -60%) scale(1.1); } }
+        .lyrics-box { position: fixed; bottom: 40px; width: 100%; text-align: center; z-index: 20; padding: 0 10px; box-sizing: border-box; }
+        #lyric-text { color: #ffb6c1; font-size: 1.1rem; font-style: italic; text-shadow: 1px 1px 5px #000; }
+        .start-btn { padding: 20px 40px; background: #ff69b4; color: white; border: none; border-radius: 40px; font-size: 1.2rem; font-weight: bold; }
+        @keyframes fadeIn { from { opacity: 0; transform: scale(0.9); } to { opacity: 1; transform: scale(1); } }
     </style>
 </head>
 <body>
+    <canvas id="matrix"></canvas>
+    <audio id="myAudio" src="music.mp3"></audio>
 
-<audio id="bg-music" src="music.mp3" loop></audio>
-<canvas id="stars"></canvas>
-<canvas id="matrix"></canvas>
+    <div id="screen-start" class="screen">
+        <button class="start-btn" onclick="runSurprise()">HAPPY BIRTHDAY HASHLINE<br>Tap to Start 🌸</button>
+    </div>
 
-<div id="overlay">
-    <button id="start-btn">FOR MY GIRL 🌸</button>
-    <div id="countdown" class="count">3</div>
-    <div id="m1" class="msg">Happy 19th Birthday</div>
-    <div id="m2" class="msg">To My One & Only</div>
-    <div id="m3" class="msg">Hashline 🌸</div>
-</div>
+    <div id="screen-sequence" class="screen hidden"><div id="content-box"></div></div>
 
-<div id="book-trigger">🌸</div>
+    <div id="screen-main" class="screen hidden">
+        <div class="stack-container" id="stack"><div id="tap-hint">Tap to flip ✨</div></div>
+        <div class="lyrics-box"><p id="lyric-text">You look pretty good today...</p></div>
+    </div>
 
-<div id="flipbook-container"></div>
+    <script>
+        const box = document.getElementById('content-box');
+        const lyrics = [
+            "You look pretty good today", "Is it me or did you shave?", "Good, you've been looking at me twice as more",
+            "So I can see your face", "You sit across from me, in the classroom", "But do you even know my name?",
+            "If you want to ask me how I am", "Don't hesitate", "'Cause you're my cru- cru- crush",
+            "And I like you very much", "And I'd appreciate", "If you'd like me back",
+            "But it's okay, 'cause you make my heart", "In art class...", "In art class. ❤️"
+        ];
 
-<script>
-    const mCanvas = document.getElementById('matrix');
-    const mCtx = mCanvas.getContext('2d');
-    const sCanvas = document.getElementById('stars');
-    const sCtx = sCanvas.getContext('2d');
-    const music = document.getElementById('bg-music');
-    const startBtn = document.getElementById('start-btn');
-    const book = document.getElementById('flipbook-container');
-    const trigger = document.getElementById('book-trigger');
-
-    mCanvas.width = sCanvas.width = window.innerWidth;
-    mCanvas.height = sCanvas.height = window.innerHeight;
-
-    // STARS & FALLING FLOWERS
-    const stars = Array.from({length: 100}, () => ({x: Math.random()*sCanvas.width, y: Math.random()*sCanvas.height, r: Math.random()*1.5}));
-    function drawStars() {
-        sCtx.clearRect(0,0,sCanvas.width, sCanvas.height);
-        sCtx.fillStyle = "white";
-        stars.forEach(s => { sCtx.beginPath(); sCtx.arc(s.x, s.y, s.r, 0, Math.PI*2); sCtx.fill(); });
-    }
-    drawStars();
-
-    const chars = "🌸✨HASHLINE🌸19🌸";
-    const drops = Array(Math.floor(mCanvas.width/20)).fill(1);
-    function drawMatrix() {
-        mCtx.fillStyle = "rgba(0, 0, 0, 0.1)";
-        mCtx.fillRect(0, 0, mCanvas.width, mCanvas.height);
-        mCtx.fillStyle = "#ffb7c5";
-        mCtx.font = "20px serif";
-        drops.forEach((y, i) => {
-            const text = chars[Math.floor(Math.random()*chars.length)];
-            mCtx.fillText(text, i*20, y*20);
-            if(y*20 > mCanvas.height && Math.random() > 0.98) drops[i] = 0;
-            drops[i]++;
-        });
-    }
-    setInterval(drawMatrix, 50);
-
-    // FLIPBOOK DATA
-    const captions = ["19 looks good on you 🌸", "My favorite person", "Keep shining", "Pure happiness", "Love you forever", "The most beautiful", "A special day", "Simply Hashline", "My queen 🌸", "Gorgeous!", "Always us", "The best laugh", "So lucky for you", "Forever ❤️", "Happy 19th, Hashline!"];
-
-    // Initialize Book
-    for (let i = 15; i >= 1; i--) {
-        const div = document.createElement('div');
-        div.className = 'polaroid';
-        div.style.zIndex = 15 - i;
-        div.innerHTML = `<img src="${i}.jpg"><div class="caption-text">${captions[i-1]}</div>`;
-        book.appendChild(div);
-    }
-
-    // Trigger Logic
-    trigger.onclick = function() {
-        const topCard = book.querySelector('.polaroid:not([style*="transform: rotateY"])');
-        if (topCard) {
-            topCard.style.transform = "rotateY(-110deg)";
-            topCard.style.opacity = "0";
-            setTimeout(() => { topCard.style.display = 'none'; }, 800);
-        }
-    };
-
-    startBtn.onclick = () => {
-        startBtn.style.display = 'none';
-        music.play();
-        runSequence();
-    };
-
-    async function runSequence() {
-        const count = document.getElementById('countdown');
-        count.style.display = 'block';
-        await new Promise(r => setTimeout(r, 1000)); count.innerText = "2";
-        await new Promise(r => setTimeout(r, 1000)); count.innerText = "1";
-        await new Promise(r => setTimeout(r, 1000)); count.style.display = "none";
-
-        const ids = ['m1', 'm2', 'm3'];
-        for (let id of ids) {
-            let el = document.getElementById(id);
-            el.style.display = "block";
-            await new Promise(r => setTimeout(r, 1500));
-            if (id !== 'm3') el.style.display = "none";
-        }
-        document.getElementById('overlay').style.background = "transparent";
-        book.style.display = "block";
-        trigger.style.display = "block";
-    }
-</script<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>For Hashline 🌸</title>
-    <style>
-        body { margin: 0; background: #000; overflow: hidden; font-family: 'Courier New', Courier, monospace; }
-        canvas { position: absolute; top: 0; left: 0; z-index: 1; }
-        
-        #overlay {
-            position: absolute; width: 100%; height: 100%;
-            display: flex; flex-direction: column; justify-content: center; align-items: center;
-            z-index: 10; background: rgba(0,0,0,0.85);
+        async function runSurprise() {
+            document.getElementById('screen-start').classList.add('hidden');
+            document.getElementById('screen-sequence').classList.remove('hidden');
+            document.getElementById('myAudio').play();
+            for (let i = 3; i > 0; i--) { box.innerHTML = `<div id="count-num">${i}</div>`; await new Promise(r => setTimeout(r, 1000)); }
+            const words = ["Happy", "Birthday", "To my one and only", "Hashline 🌸✨"];
+            for (let w of words) { box.innerHTML = `<div class="reveal-text">${w}</div>`; await new Promise(r => setTimeout(r, 1200)); }
+            document.getElementById('screen-sequence').classList.add('hidden');
+            document.getElementById('screen-main').classList.remove('hidden');
+            const stack = document.getElementById('stack');
+            const hint = document.getElementById('tap-hint');
+            let idx = 0;
+            for(let i = 15; i >= 1; i--) {
+                const p = document.createElement('div');
+                p.className = 'photo';
+                p.style.backgroundImage = `url('photo${i}.jpg')`;
+                p.onclick = function() {
+                    if (hint) hint.classList.add('hidden');
+                    this.classList.add('flipped');
+                    idx++;
+                    if(lyrics[idx]) document.getElementById('lyric-text').innerText = lyrics[idx];
+                };
+                stack.appendChild(p);
+            }
         }
 
-        #start-btn {
-            padding: 18px 35px; font-size: 1.1rem; background: #ffb7c5; color: #d01d56;
-            border: none; border-radius: 50px; font-weight: bold; cursor: pointer;
-            box-shadow: 0 0 20px #ffb7c5; z-index: 100;
+        const c = document.getElementById('matrix'), x = c.getContext('2d');
+        c.width = window.innerWidth; c.height = window.innerHeight;
+        const m = "HASHLINE♡🌸".split(""), d = Array(Math.floor(c.width/16)).fill(1);
+        function draw() {
+            x.fillStyle = "rgba(0,0,0,0.1)"; x.fillRect(0,0,c.width,c.height);
+            x.fillStyle = "#ffb6c1"; x.font = "16px arial";
+            d.forEach((y, i) => { x.fillText(m[Math.floor(Math.random()*m.length)], i*16, y*16); if(y*16 > c.height && Math.random() > 0.9) d[i] = 0; d[i]++; });
         }
-
-        .count { font-size: 7rem; font-weight: bold; color: #ffb7c5; display: none; text-shadow: 0 0 15px #ff69b4; }
-        .msg { font-size: 2rem; display: none; text-transform: uppercase; color: #ffb7c5; text-align: center; line-height: 1.5; }
-
-        /* THE BOOK CORNER BUTTON */
-        #book-trigger {
-            display: none; position: fixed; bottom: 30px; right: 30px;
-            z-index: 40; font-size: 3.5rem; cursor: pointer;
-            animation: bounce 2s infinite;
-        }
-
-        @keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-15px); } }
-
-        /* FLIPBOOK CONTAINER */
-        #flipbook-container {
-            display: none; position: relative; width: 300px; height: 420px;
-            z-index: 20; perspective: 1500px;
-        }
-
-        .polaroid {
-            position: absolute; width: 100%; height: 100%;
-            background: white; padding: 10px 10px 60px 10px;
-            box-sizing: border-box; border-radius: 2px;
-            box-shadow: 0 5px 25px rgba(0,0,0,0.6);
-            transition: transform 0.8s ease-in-out, opacity 0.5s;
-            transform-origin: left center;
-        }
-
-        .polaroid img { width: 100%; height: 100%; object-fit: cover; }
-
-        .caption-text {
-            position: absolute; bottom: 15px; width: 100%; left: 0;
-            text-align: center; color: #d01d56; font-weight: bold; font-size: 1rem;
-        }
-    </style>
-</head>
-<body>
-
-<audio id="bg-music" src="music.mp3" loop></audio>
-<canvas id="stars"></canvas>
-<canvas id="matrix"></canvas>
-
-<div id="overlay">
-    <button id="start-btn">FOR MY GIRL 🌸</button>
-    <div id="countdown" class="count">3</div>
-    <div id="m1" class="msg">Happy 19th Birthday</div>
-    <div id="m2" class="msg">To My One & Only</div>
-    <div id="m3" class="msg">Hashline 🌸</div>
-</div>
-
-<div id="book-trigger">🌸</div>
-
-<div id="flipbook-container"></div>
-
-<script>
-    const mCanvas = document.getElementById('matrix');
-    const mCtx = mCanvas.getContext('2d');
-    const sCanvas = document.getElementById('stars');
-    const sCtx = sCanvas.getContext('2d');
-    const music = document.getElementById('bg-music');
-    const startBtn = document.getElementById('start-btn');
-    const book = document.getElementById('flipbook-container');
-    const trigger = document.getElementById('book-trigger');
-
-    mCanvas.width = sCanvas.width = window.innerWidth;
-    mCanvas.height = sCanvas.height = window.innerHeight;
-
-    // STARS & FALLING FLOWERS
-    const stars = Array.from({length: 100}, () => ({x: Math.random()*sCanvas.width, y: Math.random()*sCanvas.height, r: Math.random()*1.5}));
-    function drawStars() {
-        sCtx.clearRect(0,0,sCanvas.width, sCanvas.height);
-        sCtx.fillStyle = "white";
-        stars.forEach(s => { sCtx.beginPath(); sCtx.arc(s.x, s.y, s.r, 0, Math.PI*2); sCtx.fill(); });
-    }
-    drawStars();
-
-    const chars = "🌸✨HASHLINE🌸19🌸";
-    const drops = Array(Math.floor(mCanvas.width/20)).fill(1);
-    function drawMatrix() {
-        mCtx.fillStyle = "rgba(0, 0, 0, 0.1)";
-        mCtx.fillRect(0, 0, mCanvas.width, mCanvas.height);
-        mCtx.fillStyle = "#ffb7c5";
-        mCtx.font = "20px serif";
-        drops.forEach((y, i) => {
-            const text = chars[Math.floor(Math.random()*chars.length)];
-            mCtx.fillText(text, i*20, y*20);
-            if(y*20 > mCanvas.height && Math.random() > 0.98) drops[i] = 0;
-            drops[i]++;
-        });
-    }
-    setInterval(drawMatrix, 50);
-
-    // FLIPBOOK DATA
-    const captions = ["19 looks good on you 🌸", "My favorite person", "Keep shining", "Pure happiness", "Love you forever", "The most beautiful", "A special day", "Simply Hashline", "My queen 🌸", "Gorgeous!", "Always us", "The best laugh", "So lucky for you", "Forever ❤️", "Happy 19th, Hashline!"];
-
-    // Initialize Book
-    for (let i = 15; i >= 1; i--) {
-        const div = document.createElement('div');
-        div.className = 'polaroid';
-        div.style.zIndex = 15 - i;
-        div.innerHTML = `<img src="${i}.jpg"><div class="caption-text">${captions[i-1]}</div>`;
-        book.appendChild(div);
-    }
-
-    // Trigger Logic
-    trigger.onclick = function() {
-        const topCard = book.querySelector('.polaroid:not([style*="transform: rotateY"])');
-        if (topCard) {
-            topCard.style.transform = "rotateY(-110deg)";
-            topCard.style.opacity = "0";
-            setTimeout(() => { topCard.style.display = 'none'; }, 800);
-        }
-    };
-
-    startBtn.onclick = () => {
-        startBtn.style.display = 'none';
-        music.play();
-        runSequence();
-    };
-
-    async function runSequence() {
-        const count = document.getElementById('countdown');
-        count.style.display = 'block';
-        await new Promise(r => setTimeout(r, 1000)); count.innerText = "2";
-        await new Promise(r => setTimeout(r, 1000)); count.innerText = "1";
-        await new Promise(r => setTimeout(r, 1000)); count.style.display = "none";
-
-        const ids = ['m1', 'm2', 'm3'];
-        for (let id of ids) {
-            let el = document.getElementById(id);
-            el.style.display = "block";
-            await new Promise(r => setTimeout(r, 1500));
-            if (id !== 'm3') el.style.display = "none";
-        }
-        document.getElementById('overlay').style.background = "transparent";
-        book.style.display = "block";
-        trigger.style.display = "block";
-    }
-</script// Ensure this matches your loop
-let currentPage = 0;
-
-function flipPage() {
-    if (currentPage < 15) {
-        const pages = document.querySelectorAll('.polaroid');
-        pages[currentPage].classList.add('flipped'); // Triggers the CSS above
-        
-        // This updates the lyrics on the side
-        document.getElementById('lyrics-sidebar').innerText = songLyrics[currentPage];
-        
-        currentPage++;
-    }
-}
->
-</body>
-</html>
->
-</body>
-</html>
->
+        setInterval(draw, 40);
+    </script>
 </body>
 </html>
