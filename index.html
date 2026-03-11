@@ -18,7 +18,7 @@
         @keyframes bounce { 0%, 100% { transform: translate(-50%, -50%) scale(1); } 50% { transform: translate(-50%, -60%) scale(1.1); } }
         .lyrics-box { position: fixed; bottom: 40px; width: 100%; text-align: center; z-index: 20; padding: 0 10px; box-sizing: border-box; }
         #lyric-text { color: #ffb6c1; font-size: 1.1rem; font-style: italic; text-shadow: 1px 1px 5px #000; }
-        .start-btn { padding: 20px 40px; background: #ff69b4; color: white; border: none; border-radius: 40px; font-size: 1.2rem; font-weight: bold; }
+        .start-btn { padding: 20px 40px; background: #ff69b4; color: white; border: none; border-radius: 40px; font-size: 1.2rem; font-weight: bold; cursor: pointer; }
         @keyframes fadeIn { from { opacity: 0; transform: scale(0.9); } to { opacity: 1; transform: scale(1); } }
     </style>
 </head>
@@ -34,40 +34,68 @@
 
     <div id="screen-main" class="screen hidden">
         <div class="stack-container" id="stack"><div id="tap-hint">Tap to flip ✨</div></div>
-        <div class="lyrics-box"><p id="lyric-text">You look pretty good today...</p></div>
+        <div class="lyrics-box"><p id="lyric-text">Swore I'd seen you before...</p></div>
     </div>
 
     <script>
         const box = document.getElementById('content-box');
+        
         const lyrics = [
-            "You look pretty good today", "Is it me or did you shave?", "Good, you've been looking at me twice as more",
-            "So I can see your face", "You sit across from me, in the classroom", "But do you even know my name?",
-            "If you want to ask me how I am", "Don't hesitate", "'Cause you're my cru- cru- crush",
-            "And I like you very much", "And I'd appreciate", "If you'd like me back",
-            "But it's okay, 'cause you make my heart", "In art class...", "In art class. ❤️"
+            "Swore I'd seen you before",
+            "Watched you walk through the door",
+            "Something in your eye",
+            "Reminded me of somebody I used to know",
+            "You touch my back",
+            "I took your hand",
+            "Something from your touch felt shockingly familiar",
+            "And I'd swore I'd seen you before",
+            "Oh, I swore I'd seen you before",
+            "Underneath the sheets, you enchanted me",
+            "And whispered sweet nothings in my ear",
+            "I shivered beneath you",
+            "All wrapped up in embers",
+            "It was a night to remember",
+            "Then I walked away ❤️"
         ];
 
         async function runSurprise() {
             document.getElementById('screen-start').classList.add('hidden');
             document.getElementById('screen-sequence').classList.remove('hidden');
-            document.getElementById('myAudio').play();
-            for (let i = 3; i > 0; i--) { box.innerHTML = `<div id="count-num">${i}</div>`; await new Promise(r => setTimeout(r, 1000)); }
+            
+            const audio = document.getElementById('myAudio');
+            audio.play().catch(e => console.log("Audio needs interaction"));
+
+            for (let i = 3; i > 0; i--) { 
+                box.innerHTML = `<div id="count-num">${i}</div>`; 
+                await new Promise(r => setTimeout(r, 1000)); 
+            }
+
             const words = ["Happy", "Birthday", "To my one and only", "Hashline 🌸✨"];
-            for (let w of words) { box.innerHTML = `<div class="reveal-text">${w}</div>`; await new Promise(r => setTimeout(r, 1200)); }
+            for (let w of words) { 
+                box.innerHTML = `<div class="reveal-text">${w}</div>`; 
+                await new Promise(r => setTimeout(r, 1200)); 
+            }
+
             document.getElementById('screen-sequence').classList.add('hidden');
             document.getElementById('screen-main').classList.remove('hidden');
+
             const stack = document.getElementById('stack');
             const hint = document.getElementById('tap-hint');
             let idx = 0;
+
             for(let i = 15; i >= 1; i--) {
                 const p = document.createElement('div');
                 p.className = 'photo';
-                p.style.backgroundImage = `url('photo${i}.jpg')`;
+                p.style.backgroundImage = `url('photo${i}.jpg')`; 
                 p.onclick = function() {
                     if (hint) hint.classList.add('hidden');
+                    if (this.classList.contains('flipped')) return;
+                    
                     this.classList.add('flipped');
                     idx++;
-                    if(lyrics[idx]) document.getElementById('lyric-text').innerText = lyrics[idx];
+                    if(lyrics[idx]) {
+                        document.getElementById('lyric-text').innerText = lyrics[idx];
+                    }
                 };
                 stack.appendChild(p);
             }
@@ -75,13 +103,18 @@
 
         const c = document.getElementById('matrix'), x = c.getContext('2d');
         c.width = window.innerWidth; c.height = window.innerHeight;
-        const m = "HASHLINE♡🌸".split(""), d = Array(Math.floor(c.width/16)).fill(1);
+        const m = "HASHLINE♡🌸✨".split(""), d = Array(Math.floor(c.width/16)).fill(1);
         function draw() {
             x.fillStyle = "rgba(0,0,0,0.1)"; x.fillRect(0,0,c.width,c.height);
             x.fillStyle = "#ffb6c1"; x.font = "16px arial";
-            d.forEach((y, i) => { x.fillText(m[Math.floor(Math.random()*m.length)], i*16, y*16); if(y*16 > c.height && Math.random() > 0.9) d[i] = 0; d[i]++; });
+            d.forEach((y, i) => { 
+                x.fillText(m[Math.floor(Math.random()*m.length)], i*16, y*16); 
+                if(y*16 > c.height && Math.random() > 0.9) d[i] = 0; 
+                d[i]++; 
+            });
         }
         setInterval(draw, 40);
     </script>
 </body>
 </html>
+                
